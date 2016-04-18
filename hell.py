@@ -1,3 +1,4 @@
+# Web scraping ... top 10 movies and its synopsis
 print "hello python !!"
 from bs4 import BeautifulSoup
 import urllib2
