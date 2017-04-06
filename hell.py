@@ -4,40 +4,29 @@ from bs4 import BeautifulSoup
 import urllib2
 url="http://www.imdb.com/chart/top"
 page=urllib2.urlopen(url)
-soup = BeautifulSoup(page.read())
+soup = BeautifulSoup(page.read(),"html.parser")
 data = []
 info = []
 table = soup.find('table', attrs={'class':'chart'})
 table_body = table.find('tbody')
 
-rows = table_body.findAll('tr')
-c=0
+rows = table_body.findAll('tr')[1:10]
+#top 10 rows of movies
+
 for row in rows:
-    cols = row.findAll('td')
+    cols = row.find('td',attrs={'class':'titleColumn'}) #find td whse class is titleColumn
     info = []
     plots = []
-    for item in cols:
-	#for i in range(1,11):        	
-	cols = item.text.strip().encode('utf-8')
-        info.append(cols)
-    for link in soup.select('td > a[href^=/title/]'):
-	    print "helloooooo"
-            href = 'http://www.imdb.com' + link.get('href')
-            #title = link.string
-            #print title
-            #get_single_item_data(href)
-	    page2=urllib2.urlopen(href)
-	    soup2 = BeautifulSoup(page2.read())
-            plot = soup2.findAll('div' , 'plot_summary')
-  	    for p in plot:
-		synopsis = p.find("div","summary_text").text
-		plots.append(synopsis) #problem is here somewhere..
-            #print info  
-            print plots          
-    data.append(info)
-    c=c+1
-    if c==10:
-	break
-for item in data:
-    print item[1]
+    a=cols.a
+    print a.text
 
+    href = 'http://www.imdb.com' + a.get('href')
+    #print href
+    #going to other url to find synopsis
+    
+    page2=urllib2.urlopen(href)
+    soup2 = BeautifulSoup(page2.read(),"html.parser")
+    synop = soup2.find('div' ,attrs={'class':'summary_text'}).text
+    print synop
+    
+  
